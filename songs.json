@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-18",
+ "updated": "2026-11-19",
  "artist_url": "https://open.spotify.com/artist/1A7MCFWw8G3RmiUYQHyzvx",
  "songs": [
   {
@@ -89,7 +89,7 @@
    "featured": true,
    "blurb": "A love letter to home, for every Novo Vizcayano far from the province.",
    "apple": "https://music.apple.com/ph/album/nueva-vizcaya-ang-aking-tahanan/6834935276?i=6834935277",
-   "preview": null,
+   "preview": "previews/nuevavizcaya.mp3",
    "pop": 100
   },
   {
