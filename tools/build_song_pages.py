@@ -1,6 +1,9 @@
 """Rebuild song/<slug>/index.html pages, sitemap.xml and robots.txt from songs.json + lyrics.json.
 Run from the repo root: python3 tools/build_song_pages.py"""
 import json,re,html,unicodedata,os
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from security import SONG_META, refresh_index
 BASE='https://rellytadeort-png.github.io/newvizcayarecords'
 h=open('index.html').read()
 css=[b for b in re.findall(r'<style>(.*?)</style>',h,re.S) if '--pine' in b][0]
@@ -22,7 +25,7 @@ for s in S:
     prev=f'<audio controls preload="none" src="../../{s["preview"]}" style="width:100%;max-width:420px;margin-top:16px"></audio>' if s.get('preview') else ''
     jsonld=json.dumps({"@context":"https://schema.org","@type":"MusicRecording","name":s['title'],"byArtist":{"@type":"MusicGroup","name":"Vizcaya Sound"},"datePublished":s.get('released'),"url":f"{BASE}/song/{sl}/","sameAs":[x for x in [s['spotify'],s.get('apple')] if x]},ensure_ascii=False)
     rel=(' · '+s['released']) if s.get('released') else ''
-    page=f'''<!DOCTYPE html><html lang="tl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    page=f'''<!DOCTYPE html><html lang="tl"><head><meta charset="UTF-8">{SONG_META}<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{t} Lyrics · Vizcaya Sound</title><meta name="description" content="{html.escape(desc)}"><link rel="canonical" href="{BASE}/song/{sl}/">
 <meta property="og:type" content="music.song"><meta property="og:title" content="{t} · Vizcaya Sound"><meta property="og:description" content="{html.escape(desc)}"><meta property="og:image" content="{img}"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../../logo-96.png">{fonts}<style>{css}
@@ -39,3 +42,4 @@ for s in S:
 open('sitemap.xml','w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'<url><loc>{u}</loc></url>\n' for u in urls)+'</urlset>\n')
 open('robots.txt','w').write(f'User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n')
 print('built',len(urls)-1,'song pages')
+refresh_index('index.html')
