@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-f4wjfZtMaUilftHJyig2J3Ad8UMvFy7PMpmOzjA1hqA='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin">
+<meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-qcFlio/Ujk80bqvwqJRMmoo9PKRnfY346TSAh5Q8h/A='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>New Vizcaya Records · Vizcaya Sound</title>
 <meta name="description" content="New Vizcaya Records, home of Vizcaya Sound: Tagalog hugot, kilig and barkada songs from Nueva Vizcaya. Stream on Spotify and Apple Music, read the lyrics, and hear previews.">
@@ -61,13 +61,23 @@ h1 em{font-style:normal;color:var(--marigold)}
 .links .am{color:#ff6b7f}
 .btn.ghost{border:1.5px solid var(--mist);color:var(--cream)}
 .btn:hover{filter:brightness(1.08)}
-.stack{position:relative;height:380px}
-.stack a{position:absolute;width:62%;border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5)}
-.stack a:nth-child(1){left:0;top:30px;transform:rotate(-5deg)}
-.stack a:nth-child(2){right:0;top:0;transform:rotate(4deg)}
-.stack span{position:absolute;left:10px;bottom:10px;background:var(--marigold);color:#1d1406;font-weight:800;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:999px}
-@media (max-width:860px){.stack{height:300px;max-width:420px}}
-@media (max-width:640px){.hero .wrap{padding-top:28px;padding-bottom:36px;gap:20px}.stack{display:none}.badge{width:76px!important;height:76px!important;margin-bottom:12px}h1{font-size:34px;margin:10px 0 12px}.lede{font-size:16px}.cta{margin-top:18px;gap:10px}.cta .btn{padding:11px 16px;font-size:15px}section{padding:48px 0}}
+.stack{position:relative;width:100%;max-width:400px;justify-self:end;perspective:1200px}
+.flip{position:relative;aspect-ratio:1;border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5);transform:rotate(3deg);transition:transform .45s ease}
+.stack:hover .flip,.stack:focus-within .flip{transform:rotate(0) scale(1.02)}
+.flip a{position:absolute;inset:0;display:block;opacity:0;transform:rotateY(-35deg) scale(.94);transform-origin:left center;transition:opacity .5s ease,transform .5s ease;pointer-events:none}
+.flip a.on{opacity:1;transform:none;pointer-events:auto}
+.flip img{display:block;width:100%;height:100%;object-fit:cover}
+.flip span{position:absolute;left:12px;top:12px;background:var(--marigold);color:#1d1406;font-weight:800;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:999px}
+.flip b{position:absolute;left:0;right:0;bottom:0;padding:40px 14px 12px;background:linear-gradient(transparent,rgba(0,0,0,.78));color:#fff;font-family:var(--display);font-weight:800;font-size:19px;line-height:1.15}
+.dots{display:flex;justify-content:center;gap:10px;margin-top:16px}
+.dots button{width:11px;height:11px;padding:0;border:0;border-radius:999px;background:var(--mist);opacity:.45;cursor:pointer;transition:width .3s,opacity .3s,background .3s}
+.dots button[aria-pressed="true"]{width:28px;opacity:1;background:var(--marigold)}
+.fliphint{text-align:center;color:var(--mist);font-size:13px;margin-top:8px}
+.fliphint .t{display:none}
+@media (hover:none){.fliphint .h{display:none}.fliphint .t{display:inline}}
+@media (prefers-reduced-motion:reduce){.flip,.flip a{transition:none}}
+@media (max-width:860px){.stack{max-width:340px;justify-self:start}}
+@media (max-width:640px){.hero .wrap{padding-top:28px;padding-bottom:36px;gap:20px}.stack{max-width:280px;justify-self:center}.badge{width:76px!important;height:76px!important;margin-bottom:12px}h1{font-size:34px;margin:10px 0 12px}.lede{font-size:16px}.cta{margin-top:18px;gap:10px}.cta .btn{padding:11px 16px;font-size:15px}section{padding:48px 0}}
 
 section{padding:72px 0;border-bottom:1px solid var(--ridge)}
 h2{font-family:var(--display);font-weight:800;font-size:clamp(28px,3.4vw,40px);line-height:1.1;text-wrap:balance}
@@ -361,13 +371,28 @@ function drawLists(){
  document.getElementById('fabLabel').textContent=SORTS[sortKey].short;
  document.querySelectorAll('#sortMenu [data-sort]').forEach(b=>b.setAttribute('aria-checked',b.dataset.sort===sortKey?'true':'false'));
 }
+function flipInit(st){
+ if(st._flip)return;st._flip=1;let i=0,t=null;
+ const show=n=>{const a=st.querySelectorAll('.flip a'),d=st.querySelectorAll('.dots button');if(a.length<2)return;i=(n+a.length)%a.length;a.forEach((x,k)=>{x.classList.toggle('on',k===i);x.setAttribute('aria-hidden',k===i?'false':'true');x.tabIndex=k===i?0:-1});d.forEach((x,k)=>x.setAttribute('aria-pressed',k===i?'true':'false'))};
+ const stop=()=>{clearInterval(t);t=null};
+ st.addEventListener('mouseenter',()=>{stop();show(i+1);t=setInterval(()=>show(i+1),1600)});
+ st.addEventListener('mouseleave',stop);
+ st.addEventListener('click',e=>{const b=e.target.closest('.dots button');if(b){stop();show(+b.dataset.i)}});
+ st.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();stop();show(i+(e.key==='ArrowRight'?1:-1));const on=st.querySelector('.flip a.on');if(on&&st.contains(document.activeElement)&&document.activeElement.closest('.flip'))on.focus()}});
+ let x0=null;
+ st.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
+ st.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40)show(i+(dx<0?1:-1))},{passive:true});
+}
 function render(d){
  DATA=d;const S=d.songs,ARTIST=d.artist_url;
  const latest=S.filter(s=>s.released).sort((a,b)=>b.released.localeCompare(a.released)).slice(0,2);
  const fmt=iso=>new Date(iso+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}).toUpperCase();
  const links=s=>`<span class="links"><a href="${esc(s.spotify)}">Spotify</a>${s.apple?`<a class="am" href="${esc(s.apple)}">Apple Music</a>`:''}</span>`;
  document.getElementById('latestList').innerHTML=latest.map(s=>`<div class="rel"><a href="${esc(s.spotify)}">${s.cover?`<img src="${esc(s.cover)}" alt="Cover art for ${esc(s.title)}" width="120" height="120">`:'<div></div>'}</a><div><p class="date">${fmt(s.released)} &middot; SINGLE</p><h3>${esc(s.title)}</h3>${s.blurb?`<p>${esc(s.blurb)}</p>`:''}<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">${links(s)}${acts(s,false)}</div></div></div>`).join('');
- document.getElementById('stack').innerHTML=latest.filter(s=>s.cover).slice(0,2).reverse().map(s=>`<a href="${esc(s.spotify)}"><img src="${esc(s.cover)}" alt="Cover art for ${esc(s.title)}"><span>New</span></a>`).join('');
+ const feat=S.filter(s=>s.featured&&s.cover&&s.released).sort((a,b)=>b.released.localeCompare(a.released)).slice(0,3);
+ const st=document.getElementById('stack');
+ st.innerHTML=`<div class="flip">${feat.map((s,i)=>`<a href="${esc(s.spotify)}" class="${i?'':'on'}" aria-hidden="${i?'true':'false'}" tabindex="${i?-1:0}"><img src="${esc(s.cover)}" alt="Cover art for ${esc(s.title)}" width="480" height="480"><span>${i?'Featured':'Newest'}</span><b>${esc(s.title)}</b></a>`).join('')}</div>${feat.length>1?`<div class="dots" role="group" aria-label="Featured songs">${feat.map((s,i)=>`<button type="button" data-i="${i}" aria-label="Show ${esc(s.title)}" aria-pressed="${i?'false':'true'}"></button>`).join('')}</div><p class="fliphint"><span class="h">Hover the cover to flip through</span><span class="t">Swipe the cover or tap the dots</span></p>`:''}`;
+ flipInit(st);
  drawLists();
  document.getElementById('count').textContent=S.length;
 }
