@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-X7rCi3cfEfS+sJJpKKvfPvE/1VWwf/RAbFgtiyATkuw='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin">
+<meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-up791iqpYv1PlQu/z3aJjvinuUGVyBE6fbytBUTyNpk='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests"><meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>New Vizcaya Records · Vizcaya Sound</title>
 <meta name="description" content="New Vizcaya Records, home of Vizcaya Sound: Tagalog hugot, kilig and barkada songs from Nueva Vizcaya. Stream on Spotify and Apple Music, read the lyrics, and hear previews.">
@@ -67,12 +67,21 @@ h1 em{font-style:normal;color:var(--marigold)}
 .flip a{position:absolute;inset:0;display:block;opacity:0;transform:rotateY(-35deg) scale(.94);transform-origin:left center;transition:opacity .5s ease,transform .5s ease;pointer-events:none}
 .flip a.on{opacity:1;transform:none;pointer-events:auto}
 .flip img{display:block;width:100%;height:100%;object-fit:cover}
-.flip span{position:absolute;left:12px;top:12px;background:var(--marigold);color:#1d1406;font-weight:800;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:999px}
+.flip a>span{position:absolute;left:12px;top:12px;background:var(--marigold);color:#1d1406;font-weight:800;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:999px}
 .flip b{position:absolute;left:0;right:0;bottom:0;padding:40px 14px 12px;background:linear-gradient(transparent,rgba(0,0,0,.78));color:#fff;font-family:var(--display);font-weight:800;font-size:19px;line-height:1.15}
 .fnav{position:absolute;top:50%;z-index:2;width:44px;height:44px;margin-top:-22px;border:0;border-radius:50%;background:rgba(6,19,11,.72);color:var(--cream);display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.45);transition:background .2s,transform .2s;touch-action:manipulation}
 .fnav:hover{background:var(--marigold);color:#1d1406;transform:scale(1.08)}
 .fnav svg{width:20px;height:20px}
 .fnav.prev{left:10px}.fnav.next{right:10px}
+.fplay{position:absolute;right:12px;top:12px;z-index:3;display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;background:rgba(6,19,11,.78);color:var(--cream);font:inherit;font-weight:800;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:6px 11px;cursor:pointer;touch-action:manipulation;box-shadow:0 4px 14px rgba(0,0,0,.4)}
+.fplay:hover{background:var(--marigold);color:#1d1406}
+.fplay.on{background:#1DB954;color:#06130b}
+.fplay svg{width:12px;height:12px}
+.fplay .eq{display:none;gap:2px;align-items:end;height:14px}
+.fplay.on svg{display:none}.fplay.on .eq{display:flex}
+.fplay .eq i{width:3px;background:currentColor;border-radius:2px;animation:eq .8s ease-in-out infinite}
+.fplay .eq i:nth-child(2){animation-delay:.2s}.fplay .eq i:nth-child(3){animation-delay:.4s}
+.fprog{position:absolute;left:0;bottom:0;z-index:3;height:4px;width:0;background:var(--marigold);pointer-events:none}
 .dots{display:flex;justify-content:center;gap:10px;margin-top:16px}
 .dots button{width:11px;height:11px;padding:0;border:0;border-radius:999px;background:var(--mist);opacity:.45;cursor:pointer;transition:width .3s,opacity .3s,background .3s}
 .dots button[aria-pressed="true"]{width:28px;opacity:1;background:var(--marigold)}
@@ -376,17 +385,31 @@ function drawLists(){
  document.querySelectorAll('#sortMenu [data-sort]').forEach(b=>b.setAttribute('aria-checked',b.dataset.sort===sortKey?'true':'false'));
 }
 function flipInit(st){
- if(st._flip)return;st._flip=1;let i=0,t=null,t0=null,man=0;
+ if(st._flip)return;st._flip=1;let i=0,t=null,t0=null,man=0,au=null,raf=0;
  const show=n=>{const a=st.querySelectorAll('.flip a'),d=st.querySelectorAll('.dots button');if(a.length<2)return;i=(n+a.length)%a.length;a.forEach((x,k)=>{x.classList.toggle('on',k===i);x.setAttribute('aria-hidden',k===i?'false':'true');x.tabIndex=k===i?0:-1});d.forEach((x,k)=>x.setAttribute('aria-pressed',k===i?'true':'false'))};
- const stop=()=>{clearInterval(t);clearTimeout(t0);t=t0=null};
- st.addEventListener('pointerenter',e=>{if(e.pointerType!=='mouse')return;man=0;stop();t0=setTimeout(()=>{if(man)return;show(i+1);t=setInterval(()=>show(i+1),1600)},450)});
- st.addEventListener('pointerleave',stop);
- st.addEventListener('pointerover',e=>{if(e.target.closest('.fnav,.dots'))stop()});
- st.addEventListener('click',e=>{const n=e.target.closest('.fnav');if(n){e.preventDefault();stop();man=1;show(i+(n.classList.contains('next')?1:-1));return}const b=e.target.closest('.dots button');if(b){stop();man=1;show(+b.dataset.i)}});
- st.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();stop();show(i+(e.key==='ArrowRight'?1:-1));const on=st.querySelector('.flip a.on');if(on&&st.contains(document.activeElement)&&document.activeElement.closest('.flip'))on.focus()}});
+ const halt=()=>{clearInterval(t);clearTimeout(t0);t=t0=null};
+ /* scrub-style previews: each manual step plays the shown song's 15-second clip from the start */
+ const P=new Map(),aud=src=>{let a=P.get(src);if(!a){a=new Audio();a.preload='auto';a.src=src;P.set(src,a)}return a};
+ const pb=()=>st.querySelector('.fplay'),pr=()=>st.querySelector('.fprog');
+ const ui=on=>{const b=pb();if(!b)return;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');b.setAttribute('aria-label',on?'Stop preview':'Play preview');b.querySelector('.l').textContent=on?'Playing':'Preview'};
+ const tick=()=>{const p=pr();if(p&&au&&au.duration)p.style.width=(au.currentTime/au.duration*100)+'%';raf=au&&!au.paused?requestAnimationFrame(tick):0};
+ const hush=()=>{if(au){au.pause();au=null}cancelAnimationFrame(raf);raf=0;ui(false);const p=pr();if(p)p.style.width='0'};
+ window.heroHush=hush;
+ const play=()=>{const on=st.querySelector('.flip a.on'),src=on&&on.dataset.p;hush();if(!src)return;if(typeof stop==='function')stop();
+  const x=aud(src);au=x;try{x.currentTime=0}catch(e){}ui(true);x.onended=()=>{if(au===x)hush()};x.onplaying=()=>{if(au===x&&!raf)tick()};
+  const q=x.play();if(q&&q.catch)q.catch(()=>{if(au===x)hush()})};
+ const step=n=>{halt();man=1;show(n);play()};
+ st.querySelectorAll('.flip a').forEach(a=>{if(a.dataset.p)aud(a.dataset.p)});
+ st.addEventListener('pointerenter',e=>{if(e.pointerType!=='mouse')return;man=0;halt();t0=setTimeout(()=>{if(man)return;const adv=()=>{if(au)hush();show(i+1)};adv();t=setInterval(adv,1600)},450)});
+ st.addEventListener('pointerleave',halt);
+ st.addEventListener('pointerover',e=>{if(e.target.closest('.fnav,.dots,.fplay'))halt()});
+ st.addEventListener('click',e=>{const f=e.target.closest('.fplay');if(f){e.preventDefault();halt();man=1;au?hush():play();return}
+  const n=e.target.closest('.fnav');if(n){e.preventDefault();step(i+(n.classList.contains('next')?1:-1));return}
+  const b=e.target.closest('.dots button');if(b)step(+b.dataset.i)});
+ st.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();step(i+(e.key==='ArrowRight'?1:-1));const on=st.querySelector('.flip a.on');if(on&&st.contains(document.activeElement)&&document.activeElement.closest('.flip'))on.focus()}});
  let x0=null;
  st.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
- st.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40)show(i+(dx<0?1:-1))},{passive:true});
+ st.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40)step(i+(dx<0?1:-1))},{passive:true});
 }
 function render(d){
  DATA=d;const S=d.songs,ARTIST=d.artist_url;
@@ -396,7 +419,7 @@ function render(d){
  document.getElementById('latestList').innerHTML=latest.map(s=>`<div class="rel"><a href="${esc(s.spotify)}">${s.cover?`<img src="${esc(s.cover)}" alt="Cover art for ${esc(s.title)}" width="120" height="120">`:'<div></div>'}</a><div><p class="date">${fmt(s.released)} &middot; SINGLE</p><h3>${esc(s.title)}</h3>${s.blurb?`<p>${esc(s.blurb)}</p>`:''}<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">${links(s)}${acts(s,false)}</div></div></div>`).join('');
  const feat=S.filter(s=>s.featured&&s.cover&&s.released).sort((a,b)=>b.released.localeCompare(a.released)).slice(0,3);
  const st=document.getElementById('stack');
- st.innerHTML=`<div class="flip">${feat.map((s,i)=>`<a href="${esc(s.spotify)}" class="${i?'':'on'}" aria-hidden="${i?'true':'false'}" tabindex="${i?-1:0}"><img src="${esc(s.cover)}" alt="Cover art for ${esc(s.title)}" width="480" height="480"><span>${i?'Featured':'Newest'}</span><b>${esc(s.title)}</b></a>`).join('')}${feat.length>1?'<button type="button" class="fnav prev" aria-label="Previous song"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="fnav next" aria-label="Next song"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>':''}</div>${feat.length>1?`<div class="dots" role="group" aria-label="Featured songs">${feat.map((s,i)=>`<button type="button" data-i="${i}" aria-label="Show ${esc(s.title)}" aria-pressed="${i?'false':'true'}"></button>`).join('')}</div><p class="fliphint"><span class="h">Hover to flip, or use the arrows</span><span class="t">Tap the arrows or swipe the cover</span></p>`:''}`;
+ st.innerHTML=`<div class="flip">${feat.map((s,i)=>`<a href="${esc(s.spotify)}" data-p="${esc(s.preview||'')}" class="${i?'':'on'}" aria-hidden="${i?'true':'false'}" tabindex="${i?-1:0}"><img src="${esc(s.cover)}" alt="Cover art for ${esc(s.title)}" width="480" height="480"><span>${i?'Featured':'Newest'}</span><b>${esc(s.title)}</b></a>`).join('')}<button type="button" class="fplay" aria-pressed="false" aria-label="Play preview"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2l10 6-10 6z" fill="currentColor"/></svg><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span class="l">Preview</span></button><i class="fprog"></i>${feat.length>1?'<button type="button" class="fnav prev" aria-label="Previous song"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="fnav next" aria-label="Next song"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>':''}</div>${feat.length>1?`<div class="dots" role="group" aria-label="Featured songs">${feat.map((s,i)=>`<button type="button" data-i="${i}" aria-label="Show ${esc(s.title)}" aria-pressed="${i?'false':'true'}"></button>`).join('')}</div><p class="fliphint"><span class="h">Click the arrows to hear each song</span><span class="t">Tap the arrows or swipe to hear each song</span></p>`:''}`;
  flipInit(st);
  drawLists();
  document.getElementById('count').textContent=S.length;
@@ -448,7 +471,7 @@ const clips=new Map();let cur=null,curA=null,byHover=false;
 function clip(b){let a=clips.get(b);if(!a){a=new Audio();a.preload='auto';a.src=b.dataset.src;a.addEventListener('ended',()=>{if(cur===b)stop();});clips.set(b,a);}return a;}
 function setOn(b,on){b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');}
 function stop(){if(cur){setOn(cur,false);curA.pause();}cur=null;curA=null;}
-function start(b){if(cur===b)return;stop();const a=clip(b);cur=b;curA=a;setOn(b,true);try{a.currentTime=0}catch(e){}
+function start(b){if(cur===b)return;stop();if(window.heroHush)heroHush();const a=clip(b);cur=b;curA=a;setOn(b,true);try{a.currentTime=0}catch(e){}
  const p=a.play();if(p&&p.catch)p.catch(()=>{if(curA!==a)return;setOn(b,false);cur=null;curA=null;const t=b.parentElement.querySelector('.tip');if(t){t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}});}
 grid.addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')return;const b=e.target.closest('.play');if(b&&!b.contains(e.relatedTarget)&&cur!==b){start(b);byHover=true;}});
 grid.addEventListener('pointerout',e=>{if(e.pointerType!=='mouse')return;const b=e.target.closest('.play');if(b&&cur===b&&byHover&&!b.contains(e.relatedTarget))stop();});
